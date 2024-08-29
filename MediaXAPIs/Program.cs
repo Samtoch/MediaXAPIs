@@ -1,5 +1,7 @@
 
+using MediaXAPIs.Data;
 using MediaXAPIs.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace MediaXAPIs
 {
@@ -11,6 +13,7 @@ namespace MediaXAPIs
 
             // Add services to the container.
             builder.Services.AddTransient<IImageService, ImageService>();
+            builder.Services.AddDbContext<MediaXDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
