@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaXAPIs", "MediaXAPIs\MediaXAPIs.csproj", "{71134736-D41B-4291-B993-08B601C7B074}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{71134736-D41B-4291-B993-08B601C7B074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71134736-D41B-4291-B993-08B601C7B074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71134736-D41B-4291-B993-08B601C7B074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71134736-D41B-4291-B993-08B601C7B074}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {550F914B-D084-41B9-AC47-13AA45F687A5}
+	EndGlobalSection
+EndGlobal
