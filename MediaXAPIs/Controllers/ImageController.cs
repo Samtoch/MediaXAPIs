@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MediaXAPIs.Data;
 using MediaXAPIs.Data.Models;
 using MediaXAPIs.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MediaXAPIs.Controllers
 {
@@ -42,8 +43,10 @@ namespace MediaXAPIs.Controllers
         [Route("Create")]
         public async Task<ActionResult> CreateProductImage(ProductImageCreate productImage)
         {
+            
             var response = await _imageService.CreateProductImage(productImage);
             return Ok(response);
+            //return StatusCode(result.ResponseCode, response);
         }
 
         [HttpPost]
