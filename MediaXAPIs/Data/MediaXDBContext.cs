@@ -11,5 +11,6 @@ namespace MediaXAPIs.Data
         }
 
         public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ProductDetail> ProductDetails { get; set; }
     }
 }

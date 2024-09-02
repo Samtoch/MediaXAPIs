@@ -13,6 +13,7 @@ namespace MediaXAPIs
 
             // Add services to the container.
             builder.Services.AddTransient<IImageService, ImageService>();
+            builder.Services.AddTransient<IProductService, ProductService>();
             builder.Services.AddDbContext<MediaXDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();

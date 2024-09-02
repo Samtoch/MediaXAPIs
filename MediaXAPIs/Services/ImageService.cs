@@ -19,7 +19,7 @@ namespace MediaXAPIs.Services
             {
                 image = await _dbContext.ProductImages.ToListAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;
@@ -27,7 +27,7 @@ namespace MediaXAPIs.Services
             return image;
         }
 
-        public async Task<List<ProductImage>> GetProductImage(string productId)
+        public async Task<List<ProductImage>> GetProductImage(int productId)
         {
             var image = new List<ProductImage>();
             try
@@ -44,7 +44,7 @@ namespace MediaXAPIs.Services
         public async Task<ResObjects<string>> CreateProductImage(ProductImageCreate productImage)
         {
             var image = new ProductImage() { 
-                DelFlag = "N",
+                DelFlag = 'N',
                 ImageId = productImage.ImageId, 
                 ProductId = productImage.ProductId, 
                 ImageString = productImage.ImageString

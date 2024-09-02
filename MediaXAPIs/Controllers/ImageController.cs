@@ -33,7 +33,7 @@ namespace MediaXAPIs.Controllers
 
         [HttpGet]
         [Route("{productId}")]
-        public async Task<IActionResult> GetImagesByProductId(string productId)
+        public async Task<IActionResult> GetImagesByProductId(int productId)
         {
             var response = await _imageService.GetProductImage(productId);
             return Ok(response);
