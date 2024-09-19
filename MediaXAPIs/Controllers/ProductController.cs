@@ -1,4 +1,5 @@
-﻿using MediaXAPIs.Services;
+﻿using MediaXAPIs.Data.Models;
+using MediaXAPIs.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,7 @@ namespace MediaXAPIs.Controllers
         }
 
         [HttpGet]
-        [Route("Details{id}")]
+        [Route("Details/{id}")]
         public async Task<IActionResult> GetProductAndImageById(int id)
         {
             var response = await _productService.GetProductAndImage(id);
@@ -45,6 +46,19 @@ namespace MediaXAPIs.Controllers
         {
             var response = await _productService.GetProductsAndImages();
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("order")]
+        public async Task<IActionResult> SubmitOrder([FromBody] Order order)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _productService.CreateOrder(order);
+            return StatusCode(response.ResCode, response);
         }
     }
 }

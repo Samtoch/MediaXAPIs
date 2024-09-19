@@ -77,6 +77,7 @@ namespace MediaXAPIs.Services
             }
             return productsAndMainImage;
         }
+
         public async Task<ProductAndImage> GetProductAndImage(int productId)
         {
             var product = new ProductAndImage();
@@ -94,6 +95,25 @@ namespace MediaXAPIs.Services
             return product;
         }
 
+        public async Task<ResObjects<bool>> CreateOrder(Order order)
+        {
+            var response = new ResObjects<bool>();
+            bool resp = false;
+            try
+            {
+                _dbContext.Orders.Add(order);
+                await _dbContext.SaveChangesAsync();
+                resp = true;
+            }
+            catch (Exception ex)
+            {
+                resp = false;
+                response = new ResObjects<bool>{ Data = resp, ResCode = 500, ResFlag = resp, ResMsg = "Failed" };
+                throw;
+            }
+            response = new ResObjects<bool> { Data = resp, ResCode = 200, ResFlag = resp, ResMsg = "Successful" };
+            return response;
+        }
 
     }
 }

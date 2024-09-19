@@ -1,5 +1,6 @@
 ﻿using MediaXAPIs.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace MediaXAPIs.Data
 {
@@ -12,5 +13,6 @@ namespace MediaXAPIs.Data
 
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
+        public DbSet<Order> Orders { get; set; }
     }
 }
