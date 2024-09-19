@@ -5,6 +5,6 @@
         public string ResMsg { get; set; }
         public int ResCode { get; set; }
         public bool ResFlag { get; set; }
-        public T Data { get; set; }
+        public T Data { get; set; } //new
     }
 }
