@@ -49,7 +49,7 @@ namespace MediaXAPIs.Controllers
         }
 
         [HttpPost]
-        [Route("order")]
+        [Route("Order")]
         public async Task<IActionResult> SubmitOrder([FromBody] Order order)
         {
             if (!ModelState.IsValid)
@@ -58,6 +58,19 @@ namespace MediaXAPIs.Controllers
             }
 
             var response = await _productService.CreateOrder(order);
+            return StatusCode(response.ResCode, response);
+        }
+
+        [HttpPost]
+        [Route("OrderDetails")]
+        public async Task<IActionResult> SubmitOrderDetails([FromBody] OrderDetail order)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _productService.CreateOrderDetails(order);
             return StatusCode(response.ResCode, response);
         }
     }

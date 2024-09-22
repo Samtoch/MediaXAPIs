@@ -115,5 +115,25 @@ namespace MediaXAPIs.Services
             return response;
         }
 
+        public async Task<ResObjects<bool>> CreateOrderDetails(OrderDetail order)
+        {
+            var response = new ResObjects<bool>();
+            bool resp = false;
+            try
+            {
+                _dbContext.OrderDetails.Add(order);
+                await _dbContext.SaveChangesAsync();
+                resp = true;
+            }
+            catch (Exception ex)
+            {
+                resp = false;
+                response = new ResObjects<bool> { Data = resp, ResCode = 500, ResFlag = resp, ResMsg = "Failed" };
+                throw;
+            }
+            response = new ResObjects<bool> { Data = resp, ResCode = 200, ResFlag = resp, ResMsg = "Successful" };
+            return response;
+        }
+
     }
 }
