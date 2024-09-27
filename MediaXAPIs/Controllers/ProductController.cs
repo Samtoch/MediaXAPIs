@@ -48,6 +48,14 @@ namespace MediaXAPIs.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("Orders/All")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var response = await _productService.GetOrders();
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("Order")]
         public async Task<IActionResult> SubmitOrder([FromBody] Order order)
@@ -61,9 +69,25 @@ namespace MediaXAPIs.Controllers
             return StatusCode(response.ResCode, response);
         }
 
+        [HttpGet]
+        [Route("OrderDetails/All")]
+        public async Task<IActionResult> GetAllOrderDetails()
+        {
+            var response = await _productService.GetOrderDetails();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("OrderDetails/{id}")]
+        public async Task<IActionResult> GetAllOrderDetails(string id)
+        {
+            var response = await _productService.GetOrderDetails(id);
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("OrderDetails")]
-        public async Task<IActionResult> SubmitOrderDetails([FromBody] OrderDetail order)
+        public async Task<IActionResult> SubmitOrderDetails([FromBody] List<OrderDetail> order)
         {
             if (!ModelState.IsValid)
             {

@@ -10,6 +10,6 @@
         public decimal TotalPrice { get; set; }
         public string OrderReference { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
-        public bool DelFlag { get; set; }
+        public bool DelFlag { get; set; } = false;
     }
 }

@@ -18,5 +18,8 @@
         public decimal Total { get; set; }
         public string PaymentType { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        public bool DelFlag { get; set; } = false;
+        public string OrderReference { get; set; }
+
     }
 }

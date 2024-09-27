@@ -95,6 +95,20 @@ namespace MediaXAPIs.Services
             return product;
         }
 
+        public async Task<List<Order>> GetOrders()
+        {
+            var orders = new List<Order>();
+            try
+            {
+                orders = await _dbContext.Orders.Where(x => x.DelFlag == false).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return orders;
+        }
+
         public async Task<ResObjects<bool>> CreateOrder(Order order)
         {
             var response = new ResObjects<bool>();
@@ -108,27 +122,55 @@ namespace MediaXAPIs.Services
             catch (Exception ex)
             {
                 resp = false;
-                response = new ResObjects<bool>{ Data = resp, ResCode = 500, ResFlag = resp, ResMsg = "Failed" };
+                response = new ResObjects<bool>{ Data = resp, ResCode = 500, ResFlag = resp, ResMsg = $"Failed: {ex.Message}" };
                 throw;
             }
             response = new ResObjects<bool> { Data = resp, ResCode = 200, ResFlag = resp, ResMsg = "Successful" };
             return response;
         }
 
-        public async Task<ResObjects<bool>> CreateOrderDetails(OrderDetail order)
+        public async Task<List<OrderDetail>> GetOrderDetails(string id)
+        {
+            var orders = new List<OrderDetail>();
+            try
+            {
+                orders = await _dbContext.OrderDetails.Where(x => x.OrderReference == id && x.DelFlag == false).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return orders;
+        }
+
+        public async Task<List<OrderDetail>> GetOrderDetails()
+        {
+            var orders = new List<OrderDetail>();
+            try
+            {
+                orders = await _dbContext.OrderDetails.Where(x => x.DelFlag == false).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return orders;
+        }
+
+        public async Task<ResObjects<bool>> CreateOrderDetails(List<OrderDetail> order)
         {
             var response = new ResObjects<bool>();
             bool resp = false;
             try
             {
-                _dbContext.OrderDetails.Add(order);
+                await _dbContext.OrderDetails.AddRangeAsync(order);
                 await _dbContext.SaveChangesAsync();
                 resp = true;
             }
             catch (Exception ex)
             {
                 resp = false;
-                response = new ResObjects<bool> { Data = resp, ResCode = 500, ResFlag = resp, ResMsg = "Failed" };
+                response = new ResObjects<bool> { Data = resp, ResCode = 500, ResFlag = resp, ResMsg = $"Failed: {ex.Message}" };
                 throw;
             }
             response = new ResObjects<bool> { Data = resp, ResCode = 200, ResFlag = resp, ResMsg = "Successful" };
