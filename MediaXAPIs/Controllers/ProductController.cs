@@ -16,6 +16,30 @@ namespace MediaXAPIs.Controllers
             _productService = productService;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductDetail productDetail)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _productService.CreateProduct(productDetail);
+            return StatusCode(response.ResCode, response);
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditProduct(int id, [FromBody] ProductDetail productDetail)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (id != productDetail.Id)
+                return BadRequest("Product ID mismatch");
+
+            var response = await _productService.EditProduct(productDetail);
+            return StatusCode(response.ResCode, response);
+        }
+
         [HttpGet]
         [Route("All")]
         public async Task<IActionResult> GetAll()
@@ -29,6 +53,22 @@ namespace MediaXAPIs.Controllers
         public async Task<IActionResult> GetProductById(int id)
         {
             var response = await _productService.GetProduct(id);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("New/All")]
+        public async Task<IActionResult> GetAllProductnImages()
+        {
+            var response = await _productService.GetProductWithImages();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("New/{id}")]
+        public async Task<IActionResult> GetProductnImagesById(int id)
+        {
+            var response = await _productService.GetProductWithImages(id);
             return Ok(response);
         }
 

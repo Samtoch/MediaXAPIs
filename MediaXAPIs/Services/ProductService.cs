@@ -30,16 +30,160 @@ namespace MediaXAPIs.Services
 
         public async Task<ProductDetail> GetProduct(int productId)
         {
-            var product = new ProductDetail();
+            var productDetail = new ProductDetail();
             try
             {
-                product = await _dbContext.ProductDetails.Where(x => x.DelFlag == 'N' && x.Id == productId).FirstOrDefaultAsync();
+                productDetail = await _dbContext.ProductDetails.FirstOrDefaultAsync(p => p.Id == productId && p.DelFlag == 'N');
+
+                if (productDetail == null) return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
-            return product;
+            return productDetail;
+        }
+
+        public async Task<List<ProductDetailDto>> GetProductWithImages()
+        {
+            var products = new List<ProductDetailDto>();
+            var productDetail = await _dbContext.ProductDetails.Include(i => i.ProductImages).Where(p => p.DelFlag == 'N').ToListAsync();
+
+            if (productDetail == null) return null;
+
+            // Map the ProductDetail and ProductImages to DTO
+
+            foreach (var item in productDetail)
+            {
+                var product = new ProductDetailDto();
+                product.Id = item.Id;
+                product.ProductName = item.ProductName;
+                product.Description = item.Description;
+                product.Ratings = item.Ratings;
+                product.Promoted = item.Promoted;
+                product.Price = item.Price;
+                product.ProductImages = item.ProductImages.Select(img => new ProductImageDto
+                {
+                    Id = img.Id,
+                    ImageId = img.ImageId,
+                    ImageString = img.ImageString,
+                    IsMain = img.IsMain,
+                    DelFlag = img.DelFlag
+                }).ToList();
+
+                products.Add(product);
+            }
+
+            return products;
+        }
+
+        public async Task<ProductDetailDto> GetProductWithImages(int productId)
+        {
+            var productDetail = await _dbContext.ProductDetails
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync(p => p.Id == productId && p.DelFlag == 'N');
+
+            if (productDetail == null) return null;
+
+            // Map the ProductDetail and ProductImages to DTO
+            return new ProductDetailDto
+            {
+                Id = productDetail.Id,
+                ProductName = productDetail.ProductName,
+                Description = productDetail.Description,
+                Ratings = productDetail.Ratings,
+                Price = productDetail.Price,
+                Promoted = productDetail.Promoted,
+                DelFlag = productDetail.DelFlag,
+                ProductImages = productDetail.ProductImages.Select(img => new ProductImageDto
+                {
+                    Id = img.Id,
+                    ImageId = img.ImageId,
+                    ImageString = img.ImageString,
+                    IsMain = img.IsMain,
+                    DelFlag = img.DelFlag
+                }).ToList()
+            };
+        }
+
+        public async Task<ResObjects<bool>> CreateProductWithImages(ProductDetail productDetail)
+        {
+            var response = new ResObjects<bool>();
+
+            try
+            {
+                // Save ProductDetail first so we can get the generated ID
+                _dbContext.ProductDetails.Add(productDetail);
+                await _dbContext.SaveChangesAsync(); // Save here to generate the product ID
+
+                // Now that the product ID is generated, assign it to the related ProductImages
+                //if (productDetail.ProductImages != null && productDetail.ProductImages.Count > 0)
+                //{
+                //    foreach (var image in productDetail.ProductImages)
+                //    {
+                //        image.ProductId = productDetail.Id; // Set the foreign key ProductId for each image
+                //    }
+
+                //    // Save the ProductImages after assigning the ProductId
+                //    _dbContext.ProductImages.AddRange(productDetail.ProductImages);
+                //    await _dbContext.SaveChangesAsync(); // Save the images
+                //}
+
+                response = new ResObjects<bool> { Data = true, ResCode = 201, ResMsg = "Product and images created successfully" };
+            }
+            catch (Exception ex)
+            {
+                response = new ResObjects<bool> { Data = false, ResCode = 500, ResMsg = $"Error: {ex.Message}" };
+            }
+
+            return response;
+        }
+
+
+        public async Task<ResObjects<bool>> CreateProduct(ProductDetail productDetail)
+        {
+            var response = new ResObjects<bool>();
+
+            try
+            {
+                // Ensure the child ProductImages reference the correct ProductId
+                if (productDetail.ProductImages != null && productDetail.ProductImages.Count > 0)
+                {
+                    foreach (var image in productDetail.ProductImages)
+                    {
+                        image.ProductId = productDetail.Id; // Assign ProductId to each image
+                    }
+                }
+
+                // Add the ProductDetail along with ProductImages
+                _dbContext.ProductDetails.Add(productDetail);
+                await _dbContext.SaveChangesAsync();
+
+                response = new ResObjects<bool> { Data = true, ResCode = 201, ResMsg = "Product with images created successfully" };
+            }
+            catch (Exception ex)
+            {
+                response = new ResObjects<bool> { Data = false, ResCode = 500, ResMsg = $"Error: {ex.Message}" };
+            }
+
+            return response;
+        }
+    
+
+        public async Task<ResObjects<bool>> EditProduct(ProductDetail productDetail)
+        {
+            var response = new ResObjects<bool>();
+            try
+            {
+                _dbContext.ProductDetails.Update(productDetail);
+                await _dbContext.SaveChangesAsync();
+                response = new ResObjects<bool> { Data = true, ResCode = 200, ResMsg = "Product updated successfully" };
+            }
+            catch (Exception ex)
+            {
+                response = new ResObjects<bool> { Data = false, ResCode = 500, ResMsg = $"Error: {ex.Message}" };
+            }
+            return response;
         }
 
         public async Task<List<ProductDetailPlusImg>> GetProductsAndImages()

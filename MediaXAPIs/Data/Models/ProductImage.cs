@@ -7,6 +7,18 @@
         public string ImageId { get; set; }
         public string ImageString { get; set; }
         public bool IsMain { get; set; }
+        public char DelFlag { get; set; } = 'N';
+
+        // Navigation property to reference back to ProductDetail
+        public virtual ProductDetail? ProductDetail { get; set; }
+    }
+
+    public class ProductImageDto
+    {
+        public int Id { get; set; }
+        public string ImageId { get; set; }
+        public string ImageString { get; set; }
+        public bool IsMain { get; set; }
         public char DelFlag { get; set; }
     }
 

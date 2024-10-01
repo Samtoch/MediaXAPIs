@@ -11,7 +11,11 @@ namespace MediaXAPIs
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            //// Add services to the container.
+            //builder.Services.AddControllers().AddJsonOptions(options => {
+            //    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+            //});
+
             builder.Services.AddTransient<IImageService, ImageService>();
             builder.Services.AddTransient<IProductService, ProductService>();
             builder.Services.AddDbContext<MediaXDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
