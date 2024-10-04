@@ -22,7 +22,6 @@
         public decimal? Ratings { get; set; }
         public decimal Price { get; set; }
         public bool Promoted { get; set; }
-        public char DelFlag { get; set; }
         public List<ProductImageDto> ProductImages { get; set; }
     }
 

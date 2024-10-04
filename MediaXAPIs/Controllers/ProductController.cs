@@ -17,12 +17,12 @@ namespace MediaXAPIs.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductDetail productDetail)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductDetailDto productDetail)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var response = await _productService.CreateProduct(productDetail);
+            var response = await _productService.CreateProductWithImages(productDetail);
             return StatusCode(response.ResCode, response);
         }
 

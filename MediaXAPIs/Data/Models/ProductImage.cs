@@ -15,11 +15,9 @@
 
     public class ProductImageDto
     {
-        public int Id { get; set; }
         public string ImageId { get; set; }
         public string ImageString { get; set; }
         public bool IsMain { get; set; }
-        public char DelFlag { get; set; }
     }
 
     public class ProductImageCreate

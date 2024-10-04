@@ -64,11 +64,9 @@ namespace MediaXAPIs.Services
                 product.Price = item.Price;
                 product.ProductImages = item.ProductImages.Select(img => new ProductImageDto
                 {
-                    Id = img.Id,
                     ImageId = img.ImageId,
                     ImageString = img.ImageString,
                     IsMain = img.IsMain,
-                    DelFlag = img.DelFlag
                 }).ToList();
 
                 products.Add(product);
@@ -94,40 +92,37 @@ namespace MediaXAPIs.Services
                 Ratings = productDetail.Ratings,
                 Price = productDetail.Price,
                 Promoted = productDetail.Promoted,
-                DelFlag = productDetail.DelFlag,
                 ProductImages = productDetail.ProductImages.Select(img => new ProductImageDto
                 {
-                    Id = img.Id,
                     ImageId = img.ImageId,
                     ImageString = img.ImageString,
                     IsMain = img.IsMain,
-                    DelFlag = img.DelFlag
                 }).ToList()
             };
         }
 
-        public async Task<ResObjects<bool>> CreateProductWithImages(ProductDetail productDetail)
+        public async Task<ResObjects<bool>> CreateProductWithImages(ProductDetailDto productDetailDto)
         {
             var response = new ResObjects<bool>();
 
             try
             {
-                // Save ProductDetail first so we can get the generated ID
+                var productDetail = new ProductDetail()
+                {
+                    ProductName = productDetailDto.ProductName,
+                    Description = productDetailDto.Description,
+                    Promoted = productDetailDto.Promoted,
+                    Ratings = productDetailDto.Ratings,
+                    Price = productDetailDto.Price,
+                    ProductImages = productDetailDto.ProductImages.Select(img => new ProductImage { 
+                        ImageId = img.ImageId,
+                        ImageString = img.ImageString,
+                        IsMain= img.IsMain
+                    }).ToList()
+                };
+
                 _dbContext.ProductDetails.Add(productDetail);
-                await _dbContext.SaveChangesAsync(); // Save here to generate the product ID
-
-                // Now that the product ID is generated, assign it to the related ProductImages
-                //if (productDetail.ProductImages != null && productDetail.ProductImages.Count > 0)
-                //{
-                //    foreach (var image in productDetail.ProductImages)
-                //    {
-                //        image.ProductId = productDetail.Id; // Set the foreign key ProductId for each image
-                //    }
-
-                //    // Save the ProductImages after assigning the ProductId
-                //    _dbContext.ProductImages.AddRange(productDetail.ProductImages);
-                //    await _dbContext.SaveChangesAsync(); // Save the images
-                //}
+                await _dbContext.SaveChangesAsync(); 
 
                 response = new ResObjects<bool> { Data = true, ResCode = 201, ResMsg = "Product and images created successfully" };
             }
@@ -303,11 +298,24 @@ namespace MediaXAPIs.Services
 
         public async Task<ResObjects<bool>> CreateOrderDetails(List<OrderDetail> order)
         {
+            var orderDetail = new List<OrderDetail>();
             var response = new ResObjects<bool>();
             bool resp = false;
             try
             {
-                await _dbContext.OrderDetails.AddRangeAsync(order);
+                foreach (var item in order) {
+                    var ord = new OrderDetail();
+                    ord.Price = item.Price;
+                    ord.Quantity = item.Quantity;
+                    ord.ProductId = item.ProductId;
+                    ord.OrderDate = item.OrderDate;
+                    ord.ProductName = item.ProductName;
+                    ord.OrderReference = item.OrderReference;
+                    ord.TotalPrice = item.Price * item.Quantity;
+                    orderDetail.Add(ord);
+                }
+                
+                await _dbContext.OrderDetails.AddRangeAsync(orderDetail);
                 await _dbContext.SaveChangesAsync();
                 resp = true;
             }
