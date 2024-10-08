@@ -15,6 +15,7 @@ namespace MediaXAPIs.Data
         public DbSet<ProductDetail> ProductDetails { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<UserProduct> UserProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

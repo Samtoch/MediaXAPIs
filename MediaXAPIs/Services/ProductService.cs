@@ -163,7 +163,40 @@ namespace MediaXAPIs.Services
 
             return response;
         }
-    
+
+
+        public async Task<ResObjects<bool>> AddUserProduct(string username, int id)
+        {
+            var response = new ResObjects<bool>();
+            var product = new UserProduct() { ProductId = id, Username = username };
+            try
+            {
+                _dbContext.UserProducts.Add(product);
+                await _dbContext.SaveChangesAsync();
+
+                response = new ResObjects<bool> { Data = true, ResCode = 201, ResMsg = "Product added successfully" };
+            }
+            catch (Exception ex)
+            {
+                response = new ResObjects<bool> { Data = false, ResCode = 500, ResMsg = $"Error: {ex.Message}" };
+            }
+
+            return response;
+        }
+
+        public async Task<List<UserProduct>> GetUserProducts(string username)
+        {
+            var product = new List<UserProduct>();
+            try
+            {
+                product = await _dbContext.UserProducts.Where(x => x.DelFlag == false && x.Username == username).ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return product;
+        }
 
         public async Task<ResObjects<bool>> EditProduct(ProductDetail productDetail)
         {
