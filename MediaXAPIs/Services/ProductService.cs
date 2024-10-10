@@ -165,10 +165,10 @@ namespace MediaXAPIs.Services
         }
 
 
-        public async Task<ResObjects<bool>> AddUserProduct(string username, int id)
+        public async Task<ResObjects<bool>> AddUserProduct(int userId, int id)
         {
             var response = new ResObjects<bool>();
-            var product = new UserProduct() { ProductId = id, Username = username };
+            var product = new UserProduct() { ProductId = id, UserId = userId };
             try
             {
                 _dbContext.UserProducts.Add(product);
@@ -184,12 +184,12 @@ namespace MediaXAPIs.Services
             return response;
         }
 
-        public async Task<List<UserProduct>> GetUserProducts(string username)
+        public async Task<List<UserProduct>> GetUserProducts(int userId)
         {
             var product = new List<UserProduct>();
             try
             {
-                product = await _dbContext.UserProducts.Where(x => x.DelFlag == false && x.Username == username).ToListAsync();
+                product = await _dbContext.UserProducts.Where(x => x.DelFlag == false && x.UserId == userId).ToListAsync();
             }
             catch (Exception)
             {

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MediaXAPIs")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b9e1ed87630a6081df95b444db9d81f8e9acddde")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4fa3a3b1c8b2bd9e35ac0e5b7f361f006ee835c6")]
 [assembly: System.Reflection.AssemblyProductAttribute("MediaXAPIs")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MediaXAPIs")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

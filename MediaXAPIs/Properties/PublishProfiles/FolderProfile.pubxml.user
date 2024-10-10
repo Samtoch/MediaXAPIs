@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\c#Projects\Publish\MediaXAPI</_PublishTargetUrl>
-    <History>True|2024-09-13T01:42:39.4495915Z;</History>
+    <History>True|2024-10-10T16:21:58.2920084Z;True|2024-09-13T02:42:39.4495915+01:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

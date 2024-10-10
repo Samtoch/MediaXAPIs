@@ -252,3 +252,5 @@ C:\c#Projects\MediaXAPIs\MediaXAPIs\obj\Release\net8.0\refint\MediaXAPIs.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\obj\Release\net8.0\MediaXAPIs.pdb
 C:\c#Projects\MediaXAPIs\MediaXAPIs\obj\Release\net8.0\MediaXAPIs.genruntimeconfig.cache
 C:\c#Projects\MediaXAPIs\MediaXAPIs\obj\Release\net8.0\ref\MediaXAPIs.dll
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\MySqlConnector.dll
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\Pomelo.EntityFrameworkCore.MySql.dll

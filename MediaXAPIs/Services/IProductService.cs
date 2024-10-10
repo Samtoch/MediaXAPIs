@@ -10,8 +10,8 @@ namespace MediaXAPIs.Services
         Task<ProductDetailDto> GetProductWithImages(int productId);
         Task<ResObjects<bool>> CreateProduct(ProductDetail productDetail);
         Task<ResObjects<bool>> CreateProductWithImages(ProductDetailDto productDetailDto);
-        Task<ResObjects<bool>> AddUserProduct(string username, int id);
-        Task<List<UserProduct>> GetUserProducts(string username);
+        Task<ResObjects<bool>> AddUserProduct(int userId, int id);
+        Task<List<UserProduct>> GetUserProducts(int userId);
         Task<ResObjects<bool>> EditProduct(ProductDetail productDetail);
         Task<ProductAndImage> GetProductAndImage(int productId);
         Task<List<ProductDetailPlusImg>> GetProductsAndImages();

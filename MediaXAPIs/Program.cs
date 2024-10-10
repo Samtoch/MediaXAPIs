@@ -18,7 +18,10 @@ namespace MediaXAPIs
 
             builder.Services.AddTransient<IImageService, ImageService>();
             builder.Services.AddTransient<IProductService, ProductService>();
-            builder.Services.AddDbContext<MediaXDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            //builder.Services.AddDbContext<MediaXDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<MediaXDBContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("MySqlConnString"), new MySqlServerVersion(new Version(8, 0, 2))));
+
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -33,6 +36,7 @@ namespace MediaXAPIs
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
 
             app.UseAuthorization();
 

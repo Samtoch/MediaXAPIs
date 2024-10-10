@@ -74,21 +74,21 @@ namespace MediaXAPIs.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> AddUserProduct([FromQuery] string username, [FromQuery] int id)
+        public async Task<IActionResult> AddUserProduct([FromQuery] int userId, [FromQuery] int id)
         {
-            if (string.IsNullOrEmpty(username) || id <= 0)
+            if (userId <= 0 || id <= 0)
             {
                 return BadRequest(new { success = false, message = "Invalid input: Username or Product Id is missing/invalid." });
             }
-            var response = await _productService.AddUserProduct(username, id);
+            var response = await _productService.AddUserProduct(userId, id);
             return StatusCode(response.ResCode, response);
         }
 
         [HttpGet]
-        [Route("User/{username}")]
-        public async Task<IActionResult> GetProductAndImageById(string username)
+        [Route("User/{userId}")]
+        public async Task<IActionResult> GetUserProductAndImageById(int userId)
         {
-            var response = await _productService.GetUserProducts(username);
+            var response = await _productService.GetUserProducts(userId);
             return Ok(response);
         }
 
