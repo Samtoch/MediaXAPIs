@@ -1,6 +1,7 @@
 ﻿using MediaXAPIs.Data;
 using MediaXAPIs.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 
 namespace MediaXAPIs.Services
 {
@@ -8,6 +9,7 @@ namespace MediaXAPIs.Services
     {
         private readonly MediaXDBContext _dbContext;
         private readonly IImageService _imageService;
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         public ProductService(MediaXDBContext dbContext, IImageService imageService)
         {
@@ -21,9 +23,9 @@ namespace MediaXAPIs.Services
             {
                 product = await _dbContext.ProductDetails.Where(x => x.DelFlag == 'N').ToListAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                log.Error("GetProduct " + ex);
             }
             return product;
         }
@@ -39,7 +41,7 @@ namespace MediaXAPIs.Services
             }
             catch (Exception ex)
             {
-                throw;
+                log.Error("GetProduct with id: " + productId + ", error: " + ex);
             }
             return productDetail;
         }

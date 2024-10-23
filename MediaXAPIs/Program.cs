@@ -1,6 +1,7 @@
 
 using MediaXAPIs.Data;
 using MediaXAPIs.Services;
+using MediaXAPIs.Services.User_;
 using Microsoft.EntityFrameworkCore;
 
 namespace MediaXAPIs
@@ -18,10 +19,24 @@ namespace MediaXAPIs
 
             builder.Services.AddTransient<IImageService, ImageService>();
             builder.Services.AddTransient<IProductService, ProductService>();
+            builder.Services.AddTransient<IUserService, UserService>();
+            //builder.Services.AddTransient<IProductService, ProductService>();
             //builder.Services.AddDbContext<MediaXDBContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddDbContext<MediaXDBContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("MySqlConnString"), new MySqlServerVersion(new Version(8, 0, 2))));
 
+            //builder.Services.AddDistributedMySqlCache(options =>
+            //{
+            //    options.ConnectionString = builder.Configuration.GetConnectionString("MySqlConnString");
+            //    options.TableName = "Sessions";
+            //    //options.SchemaName = "dbo";
+            //});
 
+            //builder.Services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromMinutes(30);
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.IsEssential = true; // Required for GDPR
+            //});
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,6 +44,8 @@ namespace MediaXAPIs
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            //app.UseSession();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -2,6 +2,8 @@
 using MediaXAPIs.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
+using NLog.Fluent;
 
 namespace MediaXAPIs.Controllers
 {
@@ -9,11 +11,16 @@ namespace MediaXAPIs.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductController(IProductService productService)
+        private readonly IProductService _productService;
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        public ProductController(IProductService productService, IWebHostEnvironment env)
         {
             _productService = productService;
+            _env = env;
+
         }
 
         [HttpPost]
@@ -156,6 +163,18 @@ namespace MediaXAPIs.Controllers
 
             var response = await _productService.CreateOrderDetails(order);
             return StatusCode(response.ResCode, response);
+        }
+
+        [HttpGet]
+        [Route("dir")]
+        public async Task<IActionResult> GetRootDirectory()
+        {
+
+            string rootDirectory = Directory.GetCurrentDirectory();
+            string hostDirectory = _env.ContentRootPath;
+            log.Error($"The root directory id is {rootDirectory} and Host path is {hostDirectory}");
+            string response = $"The root directory id is {rootDirectory} and Host path is {hostDirectory}" ;
+            return Ok(response);
         }
     }
 }

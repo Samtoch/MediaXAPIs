@@ -254,3 +254,9 @@ C:\c#Projects\MediaXAPIs\MediaXAPIs\obj\Release\net8.0\MediaXAPIs.genruntimeconf
 C:\c#Projects\MediaXAPIs\MediaXAPIs\obj\Release\net8.0\ref\MediaXAPIs.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\MySqlConnector.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\Microsoft.Extensions.Options.dll
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\Pomelo.Extensions.Caching.MySql.dll
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\nlog.config
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\NLog.dll
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\NLog.Extensions.Logging.dll
+C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Release\net8.0\NLog.Web.AspNetCore.dll
