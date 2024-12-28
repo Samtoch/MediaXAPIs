@@ -30,6 +30,65 @@ namespace MediaXAPIs.Services
             return product;
         }
 
+        public async Task<List<ProductDetail>> AvailableProducts()
+        {
+            var product = new List<ProductDetail>();
+            try
+            {
+                product = await _dbContext.ProductDetails
+                    .Where(pd => pd.DelFlag == 'N' && !_dbContext.UserProducts.Any(up => up.ProductId == pd.Id && !up.DelFlag)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                log.Error("GetProduct " + ex);
+            }
+            return product;
+        }
+
+        public async Task<List<ProductDetail>> AddedProducts()
+        {
+            var product = new List<ProductDetail>();
+            try
+            {
+                product = await _dbContext.ProductDetails
+                    .Where(pd => pd.DelFlag == 'N' && _dbContext.UserProducts.Any(up => up.ProductId == pd.Id && !up.DelFlag)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                log.Error("GetProduct " + ex);
+            }
+            return product;
+        }
+
+        public async Task<List<ProductDetail>> AddedUserProducts(int userId)
+        {
+            var product = new List<ProductDetail>();
+            try
+            {
+                product = await _dbContext.ProductDetails
+                    .Where(pd => pd.DelFlag == 'N' && _dbContext.UserProducts.Any(up => up.ProductId == pd.Id && up.UserId == userId && !up.DelFlag)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                log.Error("GetProduct " + ex);
+            }
+            return product;
+        }
+
+        //public async Task<List<ProductDetail>> AddedUserProducts(int userId)
+        //{
+        //    var product = new List<ProductDetail>();
+        //    try
+        //    {
+        //        product = await _dbContext.ProductDetails.Where(pd => pd.DelFlag == 'N' && _dbContext.UserProducts.Any(up => up.ProductId == pd.Id && up.UserId == userId)).ToListAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        log.Error("GetProduct " + ex);
+        //    }
+        //    return product;
+        //}
+
         public async Task<ProductDetail> GetProduct(int productId)
         {
             var productDetail = new ProductDetail();
@@ -49,7 +108,40 @@ namespace MediaXAPIs.Services
         public async Task<List<ProductDetailDto>> GetProductWithImages()
         {
             var products = new List<ProductDetailDto>();
+            //var productDetail = await _dbContext.ProductDetails.Include(i => i.ProductImages).Where(p => p.DelFlag == 'N' && !_dbContext.UserProducts.Any(u => u.ProductId == p.Id)).ToListAsync();
             var productDetail = await _dbContext.ProductDetails.Include(i => i.ProductImages).Where(p => p.DelFlag == 'N').ToListAsync();
+
+            if (productDetail == null) return null;
+
+            // Map the ProductDetail and ProductImages to DTO
+
+            foreach (var item in productDetail)
+            {
+                var product = new ProductDetailDto();
+                product.Id = item.Id;
+                product.ProductName = item.ProductName;
+                product.Description = item.Description;
+                product.Ratings = item.Ratings;
+                product.Promoted = item.Promoted;
+                product.Price = item.Price;
+                product.ProductImages = item.ProductImages.Select(img => new ProductImageDto
+                {
+                    ImageId = img.ImageId,
+                    ImageString = img.ImageString,
+                    IsMain = img.IsMain,
+                }).ToList();
+
+                products.Add(product);
+            }
+
+            return products;
+        }
+
+        public async Task<List<ProductDetailDto>> GetUserProductWithImages(int userId)
+        {
+            var products = new List<ProductDetailDto>();
+            var productDetail = await _dbContext.ProductDetails.Include(i => i.ProductImages)
+                .Where(p => p.DelFlag == 'N' && _dbContext.UserProducts.Any(u => u.ProductId == p.Id && u.UserId == userId && !u.DelFlag)).ToListAsync();
 
             if (productDetail == null) return null;
 
@@ -156,11 +248,11 @@ namespace MediaXAPIs.Services
                 _dbContext.ProductDetails.Add(productDetail);
                 await _dbContext.SaveChangesAsync();
 
-                response = new ResObjects<bool> { Data = true, ResCode = 201, ResMsg = "Product with images created successfully" };
+                response = new ResObjects<bool> { Data = true, ResCode = 201, ResFlag = true, ResMsg = "Product with images created successfully" };
             }
             catch (Exception ex)
             {
-                response = new ResObjects<bool> { Data = false, ResCode = 500, ResMsg = $"Error: {ex.Message}" };
+                response = new ResObjects<bool> { Data = false, ResCode = 500, ResFlag = false, ResMsg = $"Error: {ex.Message}" };
             }
 
             return response;
@@ -176,11 +268,38 @@ namespace MediaXAPIs.Services
                 _dbContext.UserProducts.Add(product);
                 await _dbContext.SaveChangesAsync();
 
-                response = new ResObjects<bool> { Data = true, ResCode = 201, ResMsg = "Product added successfully" };
+                response = new ResObjects<bool> { Data = true, ResCode = 201, ResFlag = true, ResMsg = "Product added successfully" };
             }
             catch (Exception ex)
             {
-                response = new ResObjects<bool> { Data = false, ResCode = 500, ResMsg = $"Error: {ex.Message}" };
+                response = new ResObjects<bool> { Data = false, ResCode = 500, ResFlag = false, ResMsg = $"Error: {ex.Message}" };
+            }
+
+            return response;
+        }
+
+        public async Task<ResObjects<bool>> RemoveUserProduct(int userId, int id)
+        {
+            var response = new ResObjects<bool>();
+            var product = new UserProduct() { ProductId = id, UserId = userId };
+            try
+            {
+                var userProd = await _dbContext.UserProducts.Where(x => x.UserId == userId && x.ProductId == id && !x.DelFlag).FirstOrDefaultAsync();
+                if (userProd != null)
+                {
+                    userProd.DelFlag = true;
+
+                    _dbContext.UserProducts.Entry(userProd).State = EntityState.Modified;
+                    await _dbContext.SaveChangesAsync();
+
+                    response = new ResObjects<bool> { Data = true, ResCode = 201, ResFlag = true, ResMsg = "Product Removed successfully" };
+                    return response;
+                }
+                response = new ResObjects<bool> { Data = false, ResCode = 400, ResFlag = false, ResMsg = "Product Was Not Found" };
+            }
+            catch (Exception ex)
+            {
+                response = new ResObjects<bool> { Data = false, ResCode = 500, ResFlag = false, ResMsg = $"Error: {ex.Message}" };
             }
 
             return response;
@@ -200,6 +319,20 @@ namespace MediaXAPIs.Services
             return product;
         }
 
+        public async Task<UserProduct> GetUserProduct(int id)
+        {
+            var product = new UserProduct();
+            try
+            {
+                product = await _dbContext.UserProducts.Where(x => x.DelFlag == false && x.ProductId == id).FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return product;
+        }
+
         public async Task<ResObjects<bool>> EditProduct(ProductDetail productDetail)
         {
             var response = new ResObjects<bool>();
@@ -207,7 +340,7 @@ namespace MediaXAPIs.Services
             {
                 _dbContext.ProductDetails.Update(productDetail);
                 await _dbContext.SaveChangesAsync();
-                response = new ResObjects<bool> { Data = true, ResCode = 200, ResMsg = "Product updated successfully" };
+                response = new ResObjects<bool> { Data = true, ResCode = 200, ResFlag = true, ResMsg = "Product updated successfully" };
             }
             catch (Exception ex)
             {
@@ -227,21 +360,71 @@ namespace MediaXAPIs.Services
                 var products = await GetProducts();
                 foreach (var prod in products)
                 {
-                    var image = _imageService.GetProductImage(prod.Id).Result.Where(x => x.IsMain == true).FirstOrDefault();
-                    if (image != null)
+                    var userProduct = await GetUserProduct(prod.Id);
+                    if (userProduct != null)
                     {
-                        prodAndMainImage = new ProductDetailPlusImg()
+                        var image = _imageService.GetProductImage(prod.Id).Result.Where(x => x.IsMain == true).FirstOrDefault();
+                        if (image != null)
                         {
-                            Id = prod.Id,
-                            Description = prod.Description,
-                            ProductName = prod.ProductName,
-                            Promoted = prod.Promoted,
-                            Ratings = prod.Ratings,
-                            DelFlag = prod.DelFlag,
-                            Price = prod.Price,
-                            ImageUrl = image.ImageId,
-                        };
-                        productsAndMainImage.Add(prodAndMainImage);
+                            prodAndMainImage = new ProductDetailPlusImg()
+                            {
+                                Id = prod.Id,
+                                Description = prod.Description,
+                                ProductName = prod.ProductName,
+                                Promoted = prod.Promoted,
+                                Ratings = prod.Ratings,
+                                DelFlag = prod.DelFlag,
+                                Price = prod.Price,
+                                ImageUrl = image.ImageId,
+
+                                Discount = userProduct.Discount,
+                                GlobalId = userProduct.UserId
+                            };
+                            productsAndMainImage.Add(prodAndMainImage);
+                        } 
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return productsAndMainImage;
+        }
+
+        public async Task<List<ProductDetailPlusImg>> GetAddedProductsAndImages()
+        {
+            var product = new ProductAndImage();
+            var images = new ProductImage();
+            var prodAndMainImage = new ProductDetailPlusImg();
+            var productsAndMainImage = new List<ProductDetailPlusImg>();
+            try
+            {
+                var products = await AddedProducts();
+                foreach (var prod in products)
+                {
+                    var userProduct = await GetUserProduct(prod.Id);
+                    if (userProduct != null)
+                    {
+                        var image = _imageService.GetProductImage(prod.Id).Result.Where(x => x.IsMain == true).FirstOrDefault();
+                        if (image != null)
+                        {
+                            prodAndMainImage = new ProductDetailPlusImg()
+                            {
+                                Id = prod.Id,
+                                Description = prod.Description,
+                                ProductName = prod.ProductName,
+                                Promoted = prod.Promoted,
+                                Ratings = prod.Ratings,
+                                DelFlag = prod.DelFlag,
+                                Price = prod.Price,
+                                ImageUrl = image.ImageId,
+
+                                Discount = userProduct.Discount,
+                                GlobalId = userProduct.UserId
+                            };
+                            productsAndMainImage.Add(prodAndMainImage);
+                        }
                     }
                 }
             }
@@ -362,6 +545,32 @@ namespace MediaXAPIs.Services
             }
             response = new ResObjects<bool> { Data = resp, ResCode = 200, ResFlag = resp, ResMsg = "Successful" };
             return response;
+        }
+
+        public async Task<List<UserAddedProduct>> GetUserAddedProducts(int id)
+        {
+            var product = new UserAddedProduct();
+
+            var query = from u in _dbContext.Users
+                        join up in _dbContext.UserProducts
+                            on u.Id equals up.UserId into userProducts // Perform left join
+                        from up in userProducts.DefaultIfEmpty() // Ensure left join behavior
+                        where u.Id == id
+                        select new UserAddedProduct
+                        {
+                            Id = u.Id,
+                            GlobalId = u.GlobalId,
+                            Username = u.Username,
+                            Firstname = u.Firstname,
+                            ProductId = up != null ? up.ProductId : (int?)null,
+                            Discount = up != null ? up.Discount : (decimal?)null
+                        };
+
+            var result = query.ToList();
+
+
+            return result;
+            
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using MediaXAPIs.Data;
 using MediaXAPIs.Data.Models;
+using MediaXAPIs.Services.Email;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 
@@ -8,13 +9,13 @@ namespace MediaXAPIs.Services.User_
     public class UserService : IUserService
     {
         private readonly MediaXDBContext _dbContext;
-        private readonly IImageService _imageService;
+        private readonly IEmailService _emailService;
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public UserService(MediaXDBContext dbContext, IImageService imageService)
+        public UserService(MediaXDBContext dbContext, IEmailService emailService)
         {
             _dbContext = dbContext;
-            _imageService = imageService;
+            _emailService = emailService;
         }
 
         public async Task<List<User>> GetUsers()
@@ -62,6 +63,13 @@ namespace MediaXAPIs.Services.User_
 
         public async Task<ResObjects<bool>> CreateUser(UserCreateDTO userdto)
         {
+            DateTime now = DateTime.Now;
+
+            //await _emailService.SendEmailAsync(userdto.Email, "TESTING..." + now, "Test body");
+
+            var emailRequest = new EmailRequest() { ToCC = userdto.Email, Firstname = userdto.Firstname, ToEmail = userdto.Email, isBodyHtml = true, Subject = "TESTING SUBJECT..." + now };
+            await _emailService.SignUpNotification(emailRequest);
+            //var emailResp = await _emailService.SendEmail(emailRequest);
 
             var response = new ResObjects<bool>();
             var existingUser = await GetUser(userdto.Email);
@@ -78,8 +86,12 @@ namespace MediaXAPIs.Services.User_
                    Email = userdto.Email,
                    Phone = userdto.Phone,
                    Username = userdto.Email,
+                   Password = userdto.Password,
+                   Role = userdto.Role,
                    GlobalId = globalId
                 };
+
+                await _emailService.SendEmailAsync(userdto.Email, "TESTING..." + now, "Test body");
 
                 _dbContext.Users.Add(user);
                 await _dbContext.SaveChangesAsync();

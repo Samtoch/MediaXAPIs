@@ -70,7 +70,6 @@ C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\System.Memory.Data.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\System.Runtime.Caching.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\System.Security.Permissions.dll
-C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\System.Text.Json.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\System.Windows.Extensions.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\c#Projects\MediaXAPIs\MediaXAPIs\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll

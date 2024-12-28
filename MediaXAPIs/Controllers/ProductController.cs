@@ -56,6 +56,30 @@ namespace MediaXAPIs.Controllers
         }
 
         [HttpGet]
+        [Route("Available")]
+        public async Task<IActionResult> GetAvailableProducts()
+        {
+            var response = await _productService.AvailableProducts();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("Added")]
+        public async Task<IActionResult> GetAddedProducts()
+        {
+            var response = await _productService.AddedProducts();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("UserAdded/{userId}")]
+        public async Task<IActionResult> GetUserAddedProductAndImage(int userId)
+        {
+            var response = await _productService.GetUserProductWithImages(userId);
+            return Ok(response);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
@@ -67,7 +91,7 @@ namespace MediaXAPIs.Controllers
         [Route("New/All")]
         public async Task<IActionResult> GetAllProductnImages()
         {
-            var response = await _productService.GetProductWithImages();
+            var response = await _productService.GetProductWithImages(); 
             return Ok(response);
         }
 
@@ -88,6 +112,18 @@ namespace MediaXAPIs.Controllers
                 return BadRequest(new { success = false, message = "Invalid input: Username or Product Id is missing/invalid." });
             }
             var response = await _productService.AddUserProduct(userId, id);
+            return StatusCode(response.ResCode, response);
+        }
+
+        [HttpPost]
+        [Route("Remove")]
+        public async Task<IActionResult> RemoveProduct([FromQuery] int userId, [FromQuery] int id)
+        {
+            if (userId <= 0 || id <= 0)
+            {
+                return BadRequest(new { success = false, message = "Invalid input: Username or Product Id is missing/invalid." });
+            }
+            var response = await _productService.RemoveUserProduct(userId, id);
             return StatusCode(response.ResCode, response);
         }
 
@@ -112,6 +148,14 @@ namespace MediaXAPIs.Controllers
         public async Task<IActionResult> GetAllProductsAndImages()
         {
             var response = await _productService.GetProductsAndImages();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("Details/AddedProductsAndImages")]
+        public async Task<IActionResult> GetAddedProductsAndImages()
+        {
+            var response = await _productService.GetAddedProductsAndImages();
             return Ok(response);
         }
 
@@ -166,15 +210,23 @@ namespace MediaXAPIs.Controllers
         }
 
         [HttpGet]
-        [Route("dir")]
-        public async Task<IActionResult> GetRootDirectory()
+        [Route("Added/{id}")]
+        public async Task<IActionResult> GetUserAddedProducts(int id)
         {
-
-            string rootDirectory = Directory.GetCurrentDirectory();
-            string hostDirectory = _env.ContentRootPath;
-            log.Error($"The root directory id is {rootDirectory} and Host path is {hostDirectory}");
-            string response = $"The root directory id is {rootDirectory} and Host path is {hostDirectory}" ;
+            var response = await _productService.GetUserAddedProducts(id);
             return Ok(response);
         }
+
+        //[HttpGet]
+        //[Route("dir")]
+        //public async Task<IActionResult> GetRootDirectory()
+        //{
+
+        //    string rootDirectory = Directory.GetCurrentDirectory();
+        //    string hostDirectory = _env.ContentRootPath;
+        //    log.Error($"The root directory id is {rootDirectory} and Host path is {hostDirectory}");
+        //    string response = $"The root directory id is {rootDirectory} and Host path is {hostDirectory}" ;
+        //    return Ok(response);
+        //}
     }
 }
